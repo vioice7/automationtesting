@@ -1,0 +1,40 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index f7a2972..4efba86 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -18,6 +18,8 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+ {
+     use \Behat\Symfony2Extension\Context\KernelDictionary;
+ 
++    private $currentUser;
++
+     /**
+      * Initializes context.
+      *
+@@ -51,6 +53,8 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         $em = $this->getContainer()->get('doctrine')->getManager();
+         $em->persist($user);
+         $em->flush();
++
++        return $user;
+     }
+ 
+     /**
+@@ -88,7 +92,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+      */
+     public function iAuthorProducts($count)
+     {
+-        $this->createProducts($count);
++        $this->createProducts($count, $this->currentUser);
+     }
+ 
+     /**
+@@ -115,7 +119,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+      */
+     public function iAmLoggedInAsAnAdmin()
+     {
+-        $this->thereIsAnAdminUserWithPassword('admin', 'admin');
++        $this->currentUser = $this->thereIsAnAdminUserWithPassword('admin', 'admin');
+ 
+         $this->visitPath('/login');
+         $this->getPage()->fillField('Username', 'admin');

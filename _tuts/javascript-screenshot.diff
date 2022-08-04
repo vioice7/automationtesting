@@ -1,0 +1,35 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index 3c45f06..befe8c3 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -151,6 +151,17 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         return;
+     }
+ 
++    /**
++     * Saving a screenshot
++     *
++     * @When I save a screenshot to :filename
++     */
++    public function iSaveAScreenshotIn($filename)
++    {
++        sleep(1);
++        $this->saveScreenshot($filename, __DIR__.'/../..');
++    }
++
+     /**
+      * @return \Behat\Mink\Element\DocumentElement
+      */
+diff --git a/features/web/product_admin.feature b/features/web/product_admin.feature
+index d778f9e..313cd3c 100644
+--- a/features/web/product_admin.feature
++++ b/features/web/product_admin.feature
+@@ -23,7 +23,7 @@ Feature: Product admin panel
+     And I am on "/admin/products"
+     When I click "New Product"
+     And I wait for the modal to load
+-    And break
++    And I save a screenshot to "shot.png"
+     And I fill in "Product Name" with "Veloci-chew toy"
+     And I fill in "Price" with "20"
+     And I fill in "Description" with "Have your velociraptor chew on this instead!"

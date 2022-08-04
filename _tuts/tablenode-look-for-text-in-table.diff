@@ -1,0 +1,35 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index e675f88..d6f0485 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -116,6 +116,17 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         $this->getEntityManager()->flush();
+     }
+ 
++    /**
++     * @Then the :rowText row should have a check mark
++     */
++    public function theProductRowShouldShowAsPublished($rowText)
++    {
++        $row = $this->getPage()->find('css', sprintf('table tr:contains("%s")', $rowText));
++        assertNotNull($row, 'Cannot find a table row with this text!');
++
++        assertContains('fa-check', $row->getHtml(), 'Could not find the fa-check element in the row!');
++    }
++
+     /**
+      * @When I click :linkName
+      */
+diff --git a/features/web/product_admin.feature b/features/web/product_admin.feature
+index e65c330..651dfe3 100644
+--- a/features/web/product_admin.feature
++++ b/features/web/product_admin.feature
+@@ -25,7 +25,7 @@ Feature: Product admin panel
+       | Foo1 | yes          |
+       | Foo2 | no           |
+     When I go to "/admin/products"
+-    # todo
++    Then the "Foo1" row should have a check mark
+ 
+   @javascript
+   Scenario: Add a new product

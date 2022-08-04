@@ -1,0 +1,41 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index a217a23..a051a8e 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -110,6 +110,19 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         assertCount(intval($count), $table->findAll('css', 'tbody tr'));
+     }
+ 
++    /**
++     * @Given I am logged in as an admin
++     */
++    public function iAmLoggedInAsAnAdmin()
++    {
++        $this->thereIsAnAdminUserWithPassword('admin', 'admin');
++
++        $this->visitPath('/login');
++        $this->getPage()->fillField('Username', 'admin');
++        $this->getPage()->fillField('Password', 'admin');
++        $this->getPage()->pressButton('Login');
++    }
++
+     /**
+      * @return \Behat\Mink\Element\DocumentElement
+      */
+diff --git a/features/web/product_admin.feature b/features/web/product_admin.feature
+index 6192938..ebcb6f1 100644
+--- a/features/web/product_admin.feature
++++ b/features/web/product_admin.feature
+@@ -4,10 +4,10 @@ Feature: Product admin panel
+   I need to be able to add/edit/delete products
+ 
+   Scenario: List available products
+-    Given there are 5 products
++    Given I am logged in as an admin
++    And there are 5 products
+     And I am on "/admin"
+     When I click "Products"
+-    And print last response
+     Then I should see 5 products
+ 
+   Scenario: Add a new product

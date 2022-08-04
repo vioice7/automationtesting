@@ -1,0 +1,19 @@
+diff --git a/mink.php b/mink.php
+index df5a88f..4e8c291 100644
+--- a/mink.php
++++ b/mink.php
+@@ -30,13 +30,6 @@ echo "The wiki site name is: ".$header->getText()."\n";
+ $subNav = $page->find('css', '.wds-tabs');
+ $linkEl = $subNav->find('css', 'li a');
+ 
+-$selectorsHandler = $session->getSelectorsHandler();
+-$linkEl = $page->find(
+-    'named',
+-    array(
+-        'link',
+-        $selectorsHandler->xpathLiteral('Books')
+-    )
+-);
++$linkEl = $page->findLink('Books');
+ 
+ echo "The link href is: ". $linkEl->getAttribute('href') . "\n";

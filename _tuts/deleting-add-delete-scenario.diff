@@ -1,0 +1,50 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index d6f0485..0d8fea8 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -96,7 +96,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+     }
+ 
+     /**
+-     * @Given the following products exist:
++     * @Given the following product(s) exist(s):
+      */
+     public function theFollowingProductsExist(TableNode $table)
+     {
+@@ -127,6 +127,14 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         assertContains('fa-check', $row->getHtml(), 'Could not find the fa-check element in the row!');
+     }
+ 
++    /**
++     * @When I click :arg1 in the :arg2 row
++     */
++    public function iClickInTheRow($arg1, $arg2)
++    {
++        throw new PendingException();
++    }
++
+     /**
+      * @When I click :linkName
+      */
+diff --git a/features/web/product_admin.feature b/features/web/product_admin.feature
+index 651dfe3..5b41e8c 100644
+--- a/features/web/product_admin.feature
++++ b/features/web/product_admin.feature
+@@ -27,6 +27,17 @@ Feature: Product admin panel
+     When I go to "/admin/products"
+     Then the "Foo1" row should have a check mark
+ 
++  Scenario: Deleting a product
++    Given the following product exists:
++      | name |
++      | Bar  |
++      | Foo1 |
++    When I go to "/admin/products"
++    And I click "Delete" in the "Foo1" row
++    Then I should see "The product was deleted"
++    And I should not see "Foo1"
++    But I should see "Bar"
++
+   @javascript
+   Scenario: Add a new product
+     Given I am on "/admin/products"

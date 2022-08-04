@@ -1,0 +1,17 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index 7ee705b..f4feba0 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -131,11 +131,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+      */
+     public function iClickInTheRow($linkText, $rowText)
+     {
+-        $row = $this->findRowByText($rowText);
+-
+-        $link = $row->findButton($linkText);
+-        assertNotNull($link, 'Cannot find button in row with text '.$linkText);
+-        $link->press();
++        $this->findRowByText($rowText)->pressButton($linkText);
+     }
+ 
+     /**

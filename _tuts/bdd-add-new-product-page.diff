@@ -1,0 +1,60 @@
+diff --git a/app/Resources/views/product/list.html.twig b/app/Resources/views/product/list.html.twig
+index eb00c76..1df8247 100644
+--- a/app/Resources/views/product/list.html.twig
++++ b/app/Resources/views/product/list.html.twig
+@@ -10,7 +10,7 @@
+             </ul>
+         </div>
+         <div class="col-sm-8">
+-            <a href="" class="btn btn-primary pull-right">
++            <a href="{{ path('product_new') }}" class="btn btn-primary pull-right">
+                 <span class="fa fa-plus"></span> New Product
+             </a>
+ 
+diff --git a/app/Resources/views/product/new.html.twig b/app/Resources/views/product/new.html.twig
+new file mode 100644
+index 0000000..6cc54c0
+--- /dev/null
++++ b/app/Resources/views/product/new.html.twig
+@@ -0,0 +1,24 @@
++{% extends 'layout.html.twig' %}
++
++{% block body %}
++    <form action="{{ path('product_new') }}" method="POST">
++        <fieldset>
++            <legend>New Product</legend>
++
++            <div class="form-group">
++                <label for="article-name">Name</label>
++                <input type="text" class="form-control" id="article-name" name="name" />
++            </div>
++            <div class="form-group">
++                <label for="article-price">Price</label>
++                <input type="text" class="form-control" id="article-price" name="price" />
++            </div>
++            <div class="form-group">
++                <label for="article-body">Description</label>
++                <textarea class="form-control" id="article-body" name="description"></textarea>
++            </div>
++        </fieldset>
++
++        <button type="submit" class="btn btn-primary">Save</button>
++    </form>
++{% endblock %}
+diff --git a/src/AppBundle/Controller/ProductAdminController.php b/src/AppBundle/Controller/ProductAdminController.php
+index 4feccda..f6ca13c 100644
+--- a/src/AppBundle/Controller/ProductAdminController.php
++++ b/src/AppBundle/Controller/ProductAdminController.php
+@@ -23,4 +23,12 @@ class ProductAdminController extends Controller
+             'products' => $products
+         ]);
+     }
++
++    /**
++     * @Route("/admin/products/new", name="product_new")
++     */
++    public function newAction()
++    {
++        return $this->render('product/new.html.twig');
++    }
+ }

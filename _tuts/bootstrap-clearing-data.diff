@@ -1,0 +1,38 @@
+diff --git a/features/bootstrap/FeatureContext.php b/features/bootstrap/FeatureContext.php
+index 4dd8366..5468a0d 100644
+--- a/features/bootstrap/FeatureContext.php
++++ b/features/bootstrap/FeatureContext.php
+@@ -39,6 +39,16 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
+         self::$container = $kernel->getContainer();
+     }
+ 
++    /**
++     * @BeforeScenario
++     */
++    public function clearData()
++    {
++        $em = self::$container->get('doctrine')->getManager();
++        $em->createQuery('DELETE FROM AppBundle:Product')->execute();
++        $em->createQuery('DELETE FROM AppBundle:User')->execute();
++    }
++
+     /**
+      * @Given there is an admin user :username with password :password
+      */
+diff --git a/features/web/authentication.feature b/features/web/authentication.feature
+index 4c76748..f5634d5 100644
+--- a/features/web/authentication.feature
++++ b/features/web/authentication.feature
+@@ -4,10 +4,10 @@ Feature: Authentication
+   I need to be able to login and logout
+ 
+   Scenario: Logging in
+-    Given there is an admin user "admin2" with password "admin"
++    Given there is an admin user "admin" with password "admin"
+     And I am on "/"
+     When I follow "Login"
+-    And I fill in "Username" with "admin2"
++    And I fill in "Username" with "admin"
+     And I fill in "Password" with "admin"
+     And I press "Login"
+     Then I should see "Logout"

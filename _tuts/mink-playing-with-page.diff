@@ -1,0 +1,13 @@
+diff --git a/mink.php b/mink.php
+index 7c77dd0..6f928d1 100644
+--- a/mink.php
++++ b/mink.php
+@@ -16,3 +16,8 @@ $session->visit('http://jurassicpark.wikia.com');
+ 
+ echo "Status code: ". $session->getStatusCode() . "\n";
+ echo "Current URL: ". $session->getCurrentUrl() . "\n";
++
++// Important object #3 DocumentElement
++$page = $session->getPage();
++
++echo "First 75 chars: ".substr($page->getText() , 0, 75) . "\n";
