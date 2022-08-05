@@ -1,0 +1,13 @@
+Feature: Wheater from MSN
+  
+  @javascript
+  Scenario: Test if the weather is sunny
+    Given I am on "https://www.msn.com/en-xl/weather/forecast/in-Bistri%C8%9Ba,Bistri%C5%A3a-N%C4%83s%C4%83ud"
+    Then I should see "Sunny"
+
+#  @javascript
+#  Scenario: Test if the weather is sunny
+#    Given I am on "https://www.msn.com/en-xl/weather/forecast/in-Paris"
+#    Then I should see "Light rain"
+
+    
