@@ -21,6 +21,8 @@ Feature: Product Admin Area
     Given I am logged in as an admin
     And I am on "/admin/products"
     When I click "New Product"
+    # And I break
+    # And I save a screenshot to 'test.png'
     And I wait for the modal to load
     And I fill in "Name" with "Veloci-chew toy"
     And I fill in "Price" with "20"
