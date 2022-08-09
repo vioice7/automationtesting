@@ -5,6 +5,8 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Symfony2Extension\Context\KernelDictionary;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php';
 
@@ -13,7 +15,7 @@ require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functio
  */
 class FeatureContext extends RawMinkContext implements Context, SnippetAcceptingContext
 {
-    private $output;
+    use KernelDictionary;
 
     /**
      * Initializes context.
@@ -24,6 +26,33 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
      */
     public function __construct()
     {
+    }
+    
+    /**
+     * @BeforeScenario
+     */
+    public function clearData()
+    {
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        // $em->createQuery('DELETE FROM AppBundle:Product')->execute();
+        // $em->createQuery('DELETE FROM AppBundle:User')->execute();
+        $purger = new ORMPurger($em);
+        $purger->purge();
+    }
+
+
+    /**
+     * @Given there is an admin user :username with password :password
+     */
+    public function thereIsAnAdminUserWithPassword($username, $password)
+    {
+        $user = new \AppBundle\Entity\User();
+        $user->setUsername($username);
+        $user->setPlainPassword($password);
+        $user->setRoles(array('ROLE_ADMIN'));
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        $em->persist($user);
+        $em->flush();
     }
 
     /**
