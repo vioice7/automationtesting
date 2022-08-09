@@ -16,10 +16,12 @@ Feature: Product Admin Area
     When I click "Products"
     Then I should see 5 products
 
+  @javascript
   Scenario: Add a new product
     Given I am logged in as an admin
     And I am on "/admin/products"
     When I click "New Product"
+    And I wait for the modal to load
     And I fill in "Name" with "Veloci-chew toy"
     And I fill in "Price" with "20"
     And I fill in "Description" with "Have your velociraptor chew on this instead!"
