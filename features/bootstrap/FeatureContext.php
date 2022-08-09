@@ -8,6 +8,9 @@ use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
+use AppBundle\Entity\Product;
+use AppBundle\Entity\User;
+
 require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php';
 
 /**
@@ -16,6 +19,9 @@ require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functio
 class FeatureContext extends RawMinkContext implements Context, SnippetAcceptingContext
 {
     use KernelDictionary;
+
+    // share user (data) between steps
+    private $currentUser;
 
     /**
      * Initializes context.
@@ -46,13 +52,15 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
      */
     public function thereIsAnAdminUserWithPassword($username, $password)
     {
-        $user = new \AppBundle\Entity\User();
+        $user = new User();
         $user->setUsername($username);
         $user->setPlainPassword($password);
         $user->setRoles(array('ROLE_ADMIN'));
         $em = $this->getContainer()->get('doctrine')->getManager();
         $em->persist($user);
         $em->flush();
+
+        return $user;
     }
 
     /**
@@ -83,5 +91,74 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
     private function getPage()
     {
         return $this->getSession()->getPage();
+    }
+
+    /**
+     * @When I click :linkName
+     */
+    public function iClick($linkName)
+    {
+        $this->getPage()->clickLink($linkName);
+    }
+    
+    /**
+     * @Then I should see :count products
+     */
+    public function iShouldSeeProducts($count)
+    {
+        $table = $this->getPage()->find('css', 'table.table');
+        assertNotNull($table, 'Cannot find a table!');
+        assertCount(intval($count), $table->findAll('css', 'tbody tr'));
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    private function getEntityManager()
+    {
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
+    }
+
+    /**
+     * @Given I am logged in as an admin
+     */
+    public function iAmLoggedInAsAnAdmin()
+    {
+        $this->currentUser = $this->thereIsAnAdminUserWithPassword('admin', 'admin');
+        $this->visitPath('/login');
+        $this->getPage()->fillField('Username', 'admin');
+        $this->getPage()->fillField('Password', 'admin');
+        $this->getPage()->pressButton('Login');
+    }
+    
+    /**
+     * @Given there are :count products
+     */
+    public function thereAreProducts($count)
+    {
+        $this->createProducts($count);
+    }
+    
+    /**
+     * @Given I author :count products
+     */
+    public function iAuthorProducts($count)
+    {
+        $this->createProducts($count, $this->currentUser);
+    }
+
+    private function createProducts($count, User $author = null)
+    {
+        for ($i = 0; $i < $count; $i++) {
+            $product = new Product();
+            $product->setName('Product '.$i);
+            $product->setPrice(rand(10, 1000));
+            $product->setDescription('lorem');
+            if ($author) {
+                $product->setAuthor($author);
+            }
+            $this->getEntityManager()->persist($product);
+        }
+        $this->getEntityManager()->flush();
     }
 }
