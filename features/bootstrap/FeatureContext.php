@@ -8,6 +8,8 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
 
 use AppBundle\Entity\Product;
 use AppBundle\Entity\User;
@@ -40,6 +42,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
      */
     public function clearData()
     {
+        // make sure you clear the data before fixtures load
         $em = $this->getContainer()->get('doctrine')->getManager();
         // $em->createQuery('DELETE FROM AppBundle:Product')->execute();
         // $em->createQuery('DELETE FROM AppBundle:User')->execute();
@@ -47,6 +50,15 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
         $purger->purge();
     }
 
+    /**
+     * @BeforeScenario @fixtures
+     */
+    public function loadFixtures(){
+        $loader = new ContainerAwareLoader($this->getContainer());
+        $loader->loadFromDirectory(__DIR__.'/../../src/AppBundle/DataFixtures');
+        $executor = new ORMExecutor($this->getEntityManager());
+        $executor->execute($loader->getFixtures(), true);
+    }
 
     /**
      * @Given there is an admin user :username with password :password
