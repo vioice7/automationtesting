@@ -210,7 +210,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
             $product->setName($row['name']);
             $product->setPrice(rand(10, 1000));
             $product->setDescription('lorem');
-            if ($row['is published'] == 'yes') {
+            if (isset($row['is published']) && $row['is published'] == 'yes') {
                 $product->setIsPublished(true);
             }
             $this->getEntityManager()->persist($product);
@@ -223,8 +223,31 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
      */
     public function theProductRowShouldShowAsPublished($rowText)
     {
+        $row = $this->findRowByText($rowText);
+        assertContains('fa-check', $row->getHtml(), 'Could not find the fa-check element in the row!');
+    }
+
+    /**
+     * @When I press :linkText in the :rowText row
+     */
+    public function iClickInTheRow($linkText, $rowText)
+    {
+        //$row = $this->findRowByText($rowText);
+        //$link = $row->findButton($linkText);
+        //assertNotNull($link, 'Cannot find link in row with text '.$linkText);
+        //$link->press();
+
+        $this->findRowByText($rowText)->pressButton($linkText);
+    }
+
+    /**
+     * @param $rowText
+     * @return \Behat\Mink\Element\NodeElement
+     */
+    private function findRowByText($rowText)
+    {
         $row = $this->getPage()->find('css', sprintf('table tr:contains("%s")', $rowText));
         assertNotNull($row, 'Cannot find a table row with this text!');
-        assertContains('fa-check', $row->getHtml(), 'Could not find the fa-check element in the row!');
+        return $row;
     }
 }

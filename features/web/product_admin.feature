@@ -24,6 +24,7 @@ Feature: Product Admin Area
       | Test0  | yes |
       | Test1  | yes |
       | Test10 | no  |
+      | Test11 | no  |
     When I go to "/admin/products"
     Then the "Test0" row should have a check mark
 
@@ -42,3 +43,13 @@ Feature: Product Admin Area
     And I should see "Veloci-chew toy"
     And I should not see "Anonymous"
 
+  Scenario: Deleting a product
+    Given the following products exist:
+      | name |
+      | Bar  |
+      | Foo1 |
+    When I go to "/admin/products"
+    And I press "Delete" in the "Foo1" row
+    Then I should see "The product was deleted"
+    And I should not see "Foo1"
+    But I should see "Bar"
