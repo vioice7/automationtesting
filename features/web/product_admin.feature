@@ -3,23 +3,33 @@ Feature: Product Admin Area
   As and admin user
   I need to be able to add/edit/delete products
 
-  Scenario: Products show author
+  Background: 
     Given I am logged in as an admin
-    And I author 5 products
+
+  Scenario: Products show author
+    Given I author 5 products
     When I go to "/admin/products"
     Then I should not see "Anonymous"
 
   Scenario: List available products
     Given there are 5 products
-    And I am logged in as an admin
+    And there is 1 product
     And I am on "/admin"
     When I click "Products"
-    Then I should see 5 products
+    Then I should see 6 products
+
+  Scenario: Show publish/unpublished
+    Given the following products exist:
+      | name | is published |
+      | Test0  | yes |
+      | Test1  | yes |
+      | Test10 | no  |
+    When I go to "/admin/products"
+    Then the "Test0" row should have a check mark
 
   @javascript
   Scenario: Add a new product
-    Given I am logged in as an admin
-    And I am on "/admin/products"
+    Given I am on "/admin/products"
     When I click "New Product"
     # And I break
     # And I save a screenshot to 'test.png'

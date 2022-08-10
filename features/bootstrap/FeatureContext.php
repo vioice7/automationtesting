@@ -1,5 +1,6 @@
 <?php
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
@@ -132,7 +133,7 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
     }
     
     /**
-     * @Given there are :count products
+     * @Given there is/are :count product(s)
      */
     public function thereAreProducts($count)
     {
@@ -199,4 +200,31 @@ class FeatureContext extends RawMinkContext implements Context, SnippetAccepting
         $this->saveScreenshot($filename, __DIR__ . '/../../');
     }
 
+    /**
+     * @Given the following products exist:
+     */
+    public function theFollowingProductsExist(TableNode $table)
+    {
+        foreach ($table as $row) {
+            $product = new Product();
+            $product->setName($row['name']);
+            $product->setPrice(rand(10, 1000));
+            $product->setDescription('lorem');
+            if ($row['is published'] == 'yes') {
+                $product->setIsPublished(true);
+            }
+            $this->getEntityManager()->persist($product);
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @Then the :rowText row should have a check mark
+     */
+    public function theProductRowShouldShowAsPublished($rowText)
+    {
+        $row = $this->getPage()->find('css', sprintf('table tr:contains("%s")', $rowText));
+        assertNotNull($row, 'Cannot find a table row with this text!');
+        assertContains('fa-check', $row->getHtml(), 'Could not find the fa-check element in the row!');
+    }
 }
