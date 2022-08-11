@@ -60,8 +60,10 @@ class MainController extends Controller
         $schemaManager->rebuildSchema();
         $schemaManager->loadFixtures();
 
-        return new JsonResponse(array(
-            'success' => true
-        ));
+        //return new JsonResponse(array(
+        //    'success' => true
+        //));
+
+        return $this->redirectToRoute('product_list');
     }
 }

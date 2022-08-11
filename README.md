@@ -1,7 +1,6 @@
 # BDD, Behat, Mink and other Wonderful ThingsRESTing with Symfony
 
-Well hi there! This repository holds the code and script
-for the [Behat PHP course on KnpUniversity](https://knpuniversity.com/screencast/behat).
+Well hi there! This repository holds the code and script for [Behat] and [Mink]
 
 ## Setup the Project
 
@@ -48,4 +47,12 @@ You can login with:
 user: admin
 pass: admin
 
-Have fun!
+5. Start up the Java Selenium server
+
+`java -jar -Dwebdriver.firefox.driver="/home/<location>/drivers/geckodriver" selenium-server-<version>.jar -debug`
+
+6. Have fun all!
+7. Have fun all!
+8. Have fun all!
+9. Have fun all!
+10. Have fun all!
