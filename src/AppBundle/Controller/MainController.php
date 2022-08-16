@@ -64,6 +64,6 @@ class MainController extends Controller
         //    'success' => true
         //));
 
-        return $this->redirectToRoute('product_list');
+        return $this->redirectToRoute('homepage'); // product_list
     }
 }
