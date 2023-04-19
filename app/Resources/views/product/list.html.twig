@@ -29,7 +29,7 @@
                 <tbody>
                     {% for product in products %}
                     <tr>
-                        <td>{{ product.name }}</td>
+                        <td><a href="/product/{{ product.name|replace(' ', '-') }}">{{ product.name }}</a></td>
                         <td>${{ product.price|number_format(2) }}</td>
                         <td>
                             {{ product.author|default('Anonymous') }}

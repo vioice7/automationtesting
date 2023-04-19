@@ -52,6 +52,19 @@ class MainController extends Controller
     }
 
     /**
+     * @Route("/product/{id}", name="product_show")
+     */
+    public function productAction($id)
+    {
+        return $this->render(
+            'product/product.html.twig', 
+            [
+                'id' => $id
+            ]   
+    );
+    }
+
+    /**
      * @Route("/_db/rebuild", name="db_rebuild")
      */
     public function dbRebuildAction()

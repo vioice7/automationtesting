@@ -22,7 +22,7 @@ class LoadFixtures extends ContainerAwareFixture
     {
         $em->createQuery('DELETE FROM AppBundle:Product');
 
-        for($i = 0; $i < random_int(5, 30); $i++)
+        for($i = 0; $i < random_int(100, 200); $i++)
         {
             $product = new Product();
             $product->setName(Parser::parse('{Samsung|Motorola|Nokia|Huawei} {A|S|T|E}' . $i)->generate());
